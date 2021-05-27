@@ -20,7 +20,7 @@
     "jsx": "react-jsx",
     "plugins": [
       {
-        "name": "typescript-styled-plugin"
+        // "name": "typescript-styled-plugin"
       }
     ],
     "baseUrl": "./",

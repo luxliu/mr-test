@@ -31,15 +31,17 @@ const initialState: CartState = {
 
 const wrapWithNamespace = wrapWithModule('modules/cart');
 const ADD_TO_CART = wrapWithNamespace('ADD_TO_CART');
+const DELETE_PRODUCT = wrapWithNamespace('DELETE_PRODUCT');
 
 export const addToCart = createAction<CartProduct>(ADD_TO_CART);
+export const deleteProduct = createAction<string>(DELETE_PRODUCT);
 
 /***************
  *   REDUCER   *
  ***************/
 export default (
   state: CartState = initialState,
-  action: Action<CartProduct>
+  action: Action<CartProduct & string>
 ) => {
   const { type, payload } = action;
 
@@ -68,6 +70,28 @@ export default (
       }
 
       return { products };
+    },
+    [DELETE_PRODUCT]: (state: CartState, payload: string) => {
+      const { products: existingProducts } = state;
+
+      const otherProducts = existingProducts.filter(
+        (product) => product.id !== payload
+      );
+      const filteredProducts = existingProducts.find(
+        (product) => product.id === payload
+      );
+      const changedQuantity = filteredProducts.quantity - 1;
+
+      return {
+        ...state,
+        products: [
+          ...otherProducts,
+          {
+            ...filteredProducts,
+            quantity: changedQuantity < 0 ? 0 : changedQuantity,
+          },
+        ],
+      };
     },
   }[type];
 
