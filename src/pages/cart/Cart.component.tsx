@@ -1,13 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 
 import * as Styled from './cart.styled';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { productsSelector } from './cart.selector';
+import { deleteProduct } from './cart.duck';
 
 const CartComponent = () => {
   const [displayCartDetail, setDisplayCartDetail] = useState(false);
   const [displayCartIcon, setDisplayCartIcon] = useState(false);
+
+  const dispatch = useDispatch();
 
   const products = useSelector(productsSelector);
   const totalQuantity = products.reduce((acc, cur) => acc + cur.quantity, 0);
@@ -18,6 +21,10 @@ const CartComponent = () => {
     } else {
       setDisplayCartIcon(false);
     }
+  };
+
+  const onDelete = (id: string) => {
+    dispatch(deleteProduct(id));
   };
 
   useEffect(() => {
@@ -56,6 +63,7 @@ const CartComponent = () => {
                     </div>
                     <div>Size: {product.size}</div>
                   </Styled.ProductRightInfo>
+                  <button onClick={() => onDelete(product.id)}>delete</button>
                 </>
               </Styled.ProductLine>
             ))}
